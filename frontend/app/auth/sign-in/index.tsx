@@ -11,8 +11,11 @@ import {
 } from "react-native";
 import facebook from "../../../assets/images/facebook.png";
 import google from "../../../assets/images/google.png";
+import { useRouter } from "expo-router";
 
 export default function SignIn() {
+  const router = useRouter();
+
   const [rememberMe, setRememberMe] = useState(false);
 
   const navigation = useNavigation();
@@ -111,8 +114,8 @@ export default function SignIn() {
           </TouchableOpacity>
         </View>
         <View style={styles.signUpContainer}>
-          <Text style={styles.signUpText}>Don't have an account?</Text>
-          <TouchableOpacity>
+          <Text style={styles.signUpText}>Don't have email account yet?</Text>
+          <TouchableOpacity onPress={() => router.push("/auth/sign-up")}>
             <Text style={styles.signUpLink}>Sign Up</Text>
           </TouchableOpacity>
         </View>

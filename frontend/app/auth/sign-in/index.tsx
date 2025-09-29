@@ -1,5 +1,5 @@
 import { Colors } from "@/constant/Colors";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
@@ -83,7 +83,14 @@ export default function SignIn() {
 
         {/* Sign In Button */}
         <TouchableOpacity style={styles.signInButton}>
-          <Text style={styles.signInButtonText}>Sign In</Text>
+          <Text
+            style={styles.signInButtonText}
+            onPress={() => {
+              router.push("/trips");
+            }}
+          >
+            Sign In
+          </Text>
         </TouchableOpacity>
 
         {/* Divider */}
@@ -101,7 +108,14 @@ export default function SignIn() {
               style={styles.socialIcon}
               resizeMode="contain"
             />
-            <Text style={styles.socialButtonText}>Sign In with Facebook</Text>
+            <Text
+              style={styles.socialButtonText}
+              onPress={() => {
+                router.push("/trips");
+              }}
+            >
+              Sign In with Facebook
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.socialButton}>
@@ -110,7 +124,14 @@ export default function SignIn() {
               style={styles.socialIcon}
               resizeMode="contain"
             />
-            <Text style={styles.socialButtonText}>Sign in with Google</Text>
+            <Text
+              style={styles.socialButtonText}
+              onPress={() => {
+                router.push("/trips");
+              }}
+            >
+              Sign in with Google
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.signUpContainer}>

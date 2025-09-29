@@ -16,6 +16,18 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="trips/index"
+        options={{
+          title: "Home",
+        }}
+      />
+      <Stack.Screen
+        name="trips/create/index"
+        options={{
+          title: "Create Trip",
+        }}
+      />
     </Stack>
   );
 }

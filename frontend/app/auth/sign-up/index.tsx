@@ -15,7 +15,7 @@ import facebook from "../../../assets/images/facebook.png";
 import google from "../../../assets/images/google.png";
 import { useRouter } from "expo-router";
 import { auth } from "../../../configs/FirebaseConfig";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const { width, height } = Dimensions.get("window");
 
@@ -37,7 +37,13 @@ export default function SignUp() {
   }, []);
 
   const OnCreateAccount = () => {
-    if (email?.length === 0 && password.length === 0 && fullName.length === 0) {
+    // Validation
+    if (
+      !fullName.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
       alert("Please fill all the fields.");
       return;
     }
@@ -52,19 +58,38 @@ export default function SignUp() {
       return;
     }
 
-    const auth = getAuth();
+    if (password.length < 6) {
+      alert("Password should be at least 6 characters.");
+      return;
+    }
+
+    // Create user with Firebase Auth
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed up
+        // Signed up successfully
         const user = userCredential.user;
-        console.log(user);
-        // ...
+        console.log("User created:", user);
+        // You can navigate to another screen here
+        // router.push("/home");
+        alert("Account created successfully!");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-        // ..
+
+        // Show user-friendly error messages
+        if (errorCode === "auth/email-already-in-use") {
+          alert(
+            "This email is already registered. Please use a different email."
+          );
+        } else if (errorCode === "auth/invalid-email") {
+          alert("Invalid email address.");
+        } else if (errorCode === "auth/weak-password") {
+          alert("Password should be at least 6 characters.");
+        } else {
+          alert("Error creating account: " + errorMessage);
+        }
       });
   };
 
@@ -109,6 +134,7 @@ export default function SignUp() {
             onChangeText={setEmail}
             value={email}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
         </View>
 
@@ -121,6 +147,7 @@ export default function SignUp() {
             placeholderTextColor={Colors.gray}
             onChangeText={setPassword}
             value={password}
+            autoCapitalize="none"
           />
         </View>
 
@@ -133,13 +160,14 @@ export default function SignUp() {
             placeholderTextColor={Colors.gray}
             onChangeText={setConfirmPassword}
             value={confirmPassword}
+            autoCapitalize="none"
           />
         </View>
 
         {/* Terms and Conditions */}
         <View style={styles.row}>
           <TouchableOpacity
-            style={styles.TermsContainer}
+            style={styles.termsContainer}
             onPress={() => setAgreeTerms(!agreeTerms)}
           >
             <View
@@ -149,13 +177,13 @@ export default function SignUp() {
             </View>
             <Text style={styles.agreeTermsText}>
               I agree to the{" "}
-              <Text style={styles.termsLink}>Terms and condition</Text>
+              <Text style={styles.termsLink}>Terms and Conditions</Text>
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Sign Up Button */}
-        <TouchableOpacity style={styles.signUpButton}>
+        <TouchableOpacity onPress={OnCreateAccount} style={styles.signUpButton}>
           <Text style={styles.signUpButtonText}>Sign Up</Text>
         </TouchableOpacity>
 
@@ -208,7 +236,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    height: height * 0.2, // 25% of screen height
+    height: height * 0.2,
     width: "100%",
     backgroundColor: Colors.primary,
     justifyContent: "flex-end",
@@ -218,7 +246,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
   },
-  // Wavy Circles - made smaller
   circle1: {
     position: "absolute",
     top: -30,
@@ -294,7 +321,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  TermsContainer: {
+  termsContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
   },

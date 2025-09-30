@@ -14,13 +14,20 @@ import {
 import facebook from "../../../assets/images/facebook.png";
 import google from "../../../assets/images/google.png";
 import { useRouter } from "expo-router";
+import { auth } from "../../../configs/FirebaseConfig";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const { width, height } = Dimensions.get("window");
 
 export default function SignUp() {
   const router = useRouter();
 
-  const [rememberMe, setRememberMe] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -28,6 +35,38 @@ export default function SignUp() {
       headerShown: false,
     });
   }, []);
+
+  const OnCreateAccount = () => {
+    if (email?.length === 0 && password.length === 0 && fullName.length === 0) {
+      alert("Please fill all the fields.");
+      return;
+    }
+
+    if (!agreeTerms) {
+      alert("Please agree to the terms and conditions.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        // ..
+      });
+  };
 
   return (
     <ScrollView
@@ -56,6 +95,8 @@ export default function SignUp() {
             style={styles.input}
             placeholder="Full Name"
             placeholderTextColor={Colors.gray}
+            onChangeText={setFullName}
+            value={fullName}
           />
         </View>
 
@@ -65,6 +106,9 @@ export default function SignUp() {
             style={styles.input}
             placeholder="Email Address"
             placeholderTextColor={Colors.gray}
+            onChangeText={setEmail}
+            value={email}
+            keyboardType="email-address"
           />
         </View>
 
@@ -75,6 +119,8 @@ export default function SignUp() {
             style={styles.input}
             placeholder="Password"
             placeholderTextColor={Colors.gray}
+            onChangeText={setPassword}
+            value={password}
           />
         </View>
 
@@ -85,21 +131,23 @@ export default function SignUp() {
             style={styles.input}
             placeholder="Confirm Password"
             placeholderTextColor={Colors.gray}
+            onChangeText={setConfirmPassword}
+            value={confirmPassword}
           />
         </View>
 
         {/* Terms and Conditions */}
         <View style={styles.row}>
           <TouchableOpacity
-            style={styles.rememberContainer}
-            onPress={() => setRememberMe(!rememberMe)}
+            style={styles.TermsContainer}
+            onPress={() => setAgreeTerms(!agreeTerms)}
           >
             <View
-              style={[styles.checkbox, rememberMe && styles.checkboxChecked]}
+              style={[styles.checkbox, agreeTerms && styles.checkboxChecked]}
             >
-              {rememberMe && <Text style={styles.checkmark}>✓</Text>}
+              {agreeTerms && <Text style={styles.checkmark}>✓</Text>}
             </View>
-            <Text style={styles.rememberText}>
+            <Text style={styles.agreeTermsText}>
               I agree to the{" "}
               <Text style={styles.termsLink}>Terms and condition</Text>
             </Text>
@@ -246,7 +294,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  rememberContainer: {
+  TermsContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
   },
@@ -270,7 +318,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
   },
-  rememberText: {
+  agreeTermsText: {
     fontFamily: "Regular",
     fontSize: 13,
     color: Colors.gray,

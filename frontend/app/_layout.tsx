@@ -1,5 +1,7 @@
+import { toastConfig } from "@/configs/toastConfig";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
   useFonts({
@@ -9,13 +11,16 @@ export default function RootLayout() {
   });
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    <>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="trips/index"
+          options={{ title: "Home", headerBackVisible: false }}
+        />
+        <Stack.Screen name="trips/create" options={{ title: "Create Trip" }} />
+      </Stack>
+      <Toast config={toastConfig} />
+    </>
   );
 }

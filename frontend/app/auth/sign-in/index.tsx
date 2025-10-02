@@ -1,5 +1,5 @@
 import { Colors } from "@/constant/Colors";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import facebook from "../../../assets/images/facebook.png";
 import google from "../../../assets/images/google.png";
-import { useRouter } from "expo-router";
 
 export default function SignIn() {
   const router = useRouter();
@@ -82,7 +81,12 @@ export default function SignIn() {
         </View>
 
         {/* Sign In Button */}
-        <TouchableOpacity style={styles.signInButton}>
+        <TouchableOpacity
+          style={styles.signInButton}
+          onPress={() => {
+            router.push("/trips");
+          }}
+        >
           <Text style={styles.signInButtonText}>Sign In</Text>
         </TouchableOpacity>
 
@@ -95,7 +99,12 @@ export default function SignIn() {
 
         {/* Social Login Buttons */}
         <View style={styles.socialButtonsContainer}>
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={() => {
+              router.push("/trips");
+            }}
+          >
             <Image
               source={facebook}
               style={styles.socialIcon}
@@ -104,7 +113,12 @@ export default function SignIn() {
             <Text style={styles.socialButtonText}>Sign In with Facebook</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={() => {
+              router.push("/trips");
+            }}
+          >
             <Image
               source={google}
               style={styles.socialIcon}
